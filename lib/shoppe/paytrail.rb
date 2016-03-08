@@ -1,3 +1,7 @@
+require 'shoppe/paytrail/version'
+require 'shoppe/paytrail/order_extensions'
+require 'shoppe/paytrail/engine'
+
 module Shoppe::Paytrail
   class << self
     def setup

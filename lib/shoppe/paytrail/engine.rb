@@ -6,7 +6,7 @@ module Shoppe
       end
 
       initializer "shoppe.paytrail.initializer" do
-        Shoppe::Paytrail.configure
+        Shoppe::Paytrail.setup
       end
 
       config.to_prepare do

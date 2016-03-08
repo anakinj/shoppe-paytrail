@@ -3,7 +3,7 @@ en:
     settings:
       labels:
         paytrail_merchant_id: Merchant ID
-        paytrail_merchant_secret: Mercant secret
+        paytrail_merchant_secret: Merchant secret
 
       help:
         paytrail_merchant_id: Help for merchant id
