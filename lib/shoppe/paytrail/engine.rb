@@ -5,7 +5,7 @@ module Shoppe
         config.i18n.load_path += Dir["#{config.root}/config/locales/**/*.yml"]
       end
 
-      initializer "shoppe.paytrail.initializer" do
+      initializer 'shoppe.paytrail.initializer' do
         Shoppe::Paytrail.setup
       end
 

@@ -10,7 +10,7 @@ module Shoppe::Paytrail
       Shoppe::Order.before_acceptance do
         Shoppe::Paytrail.configure
 
-        self.payments.where(confirmed: false, method: 'Paytrail').each do |payment|
+        payments.where(confirmed: false, method: 'Paytrail').each do |payment|
           # TODO: Can we confirm the payment?
         end
       end
