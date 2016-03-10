@@ -1,3 +1,4 @@
+require 'paytrail-client'
 require 'shoppe/paytrail/version'
 require 'shoppe/paytrail/order_extensions'
 require 'shoppe/paytrail/engine'

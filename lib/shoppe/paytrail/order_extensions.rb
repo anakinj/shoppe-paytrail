@@ -10,19 +10,41 @@ module Shoppe
                                                     failure: failure_url,
                                                     notification: notification_url
                                                   },
-                                                  price: format('%.2f',total))
+                                                  price: format('%.2f', total))
 
         response['url']
       rescue
         raise Shoppe::Errors::PaymentDeclined
       end
 
-      def create_paytrail_payment
-        payments.create(amount: total, method: 'Paytrail', refundable: true, confirmed: false)
-        save
+      def handle_paytrail_payment(params)
+        PaytrailClient::Payment.verify_payment!(params['ORDER_NUMBER'],
+                                                params['TIMESTAMP'],
+                                                params['PAID'],
+                                                params['METHOD'],
+                                                params['RETURN_AUTHCODE'])
+
+        payments.create(amount:     total,
+                        reference:  params['ORDER_NUMBER'],
+                        method:     'Paytrail',
+                        refundable: false,
+                        confirmed:  false)
+        save!
+      rescue
+        raise Shoppe::Errors::PaymentDeclined, 'Could not verify Paytrail payment'
       end
 
-      def confim_paytrail_payment
+      def verify_paytrail_payment(params)
+        PaytrailClient::Payment.verify_payment!(params['ORDER_NUMBER'],
+                                                params['TIMESTAMP'],
+                                                params['PAID'],
+                                                params['METHOD'],
+                                                params['RETURN_AUTHCODE'])
+       payment = payments.find_by(reference: params['ORDER_NUMBER'])
+       raise Shoppe::Errors::PaymentDeclined, 'Could not find payment to verify' if payment.nil?
+       payment.update_attribute(confirmed: true)
+      rescue
+        raise Shoppe::Errors::PaymentDeclined, 'Could not verify Paytrail payment'
       end
     end
   end
