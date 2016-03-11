@@ -23,7 +23,7 @@ module Shoppe
                                                 params['PAID'],
                                                 params['METHOD'],
                                                 params['RETURN_AUTHCODE'])
-
+        binding.pry
         payment = payments.find_by(reference: params['ORDER_NUMBER'])
 
         if payment.nil?
@@ -33,8 +33,8 @@ module Shoppe
                           refundable: false,
                           confirmed:  confirmed)
         end
-        
-        paytment.update_attribute(confirmed: confirmed)
+
+        payment.update_attribute(confirmed: confirmed)
 
         save!
       rescue
