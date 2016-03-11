@@ -17,32 +17,26 @@ module Shoppe
         raise Shoppe::Errors::PaymentDeclined
       end
 
-      def handle_paytrail_payment(params)
+      def handle_paytrail_payment(params, confirmed = false)
         PaytrailClient::Payment.verify_payment!(params['ORDER_NUMBER'],
                                                 params['TIMESTAMP'],
                                                 params['PAID'],
                                                 params['METHOD'],
                                                 params['RETURN_AUTHCODE'])
 
-        payments.create(amount:     total,
-                        reference:  params['ORDER_NUMBER'],
-                        method:     'Paytrail',
-                        refundable: false,
-                        confirmed:  false)
+        payment = payments.find_by(reference: params['ORDER_NUMBER'])
+
+        if payment.nil?
+          payment = payments.create(amount:     total,
+                          reference:  params['ORDER_NUMBER'],
+                          method:     'Paytrail',
+                          refundable: false,
+                          confirmed:  confirmed)
+        end
+        
+        paytment.update_attribute(confirmed: confirmed)
+
         save!
-      rescue
-        raise Shoppe::Errors::PaymentDeclined, 'Could not verify Paytrail payment'
-      end
-
-      def verify_paytrail_payment(params)
-        PaytrailClient::Payment.verify_payment!(params['ORDER_NUMBER'],
-                                                params['TIMESTAMP'],
-                                                params['PAID'],
-                                                params['METHOD'],
-                                                params['RETURN_AUTHCODE'])
-       payment = payments.find_by(reference: params['ORDER_NUMBER'])
-       raise Shoppe::Errors::PaymentDeclined, 'Could not find payment to verify' if payment.nil?
-       payment.update_attribute(confirmed: true)
       rescue
         raise Shoppe::Errors::PaymentDeclined, 'Could not verify Paytrail payment'
       end
