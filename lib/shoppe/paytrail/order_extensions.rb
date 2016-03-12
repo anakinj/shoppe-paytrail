@@ -33,7 +33,7 @@ module Shoppe
                                     refundable: false,
                                     confirmed:  confirmed)
         else
-          payment.update_attribute(confirmed: confirmed)
+          payment.update_attribute(:confirmed, confirmed)
         end
 
         save!
