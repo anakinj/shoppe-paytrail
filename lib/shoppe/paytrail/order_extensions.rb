@@ -23,18 +23,18 @@ module Shoppe
                                                 params['PAID'],
                                                 params['METHOD'],
                                                 params['RETURN_AUTHCODE'])
-        binding.pry
+
         payment = payments.find_by(reference: params['ORDER_NUMBER'])
 
         if payment.nil?
           payment = payments.create(amount:     total,
-                          reference:  params['ORDER_NUMBER'],
-                          method:     'Paytrail',
-                          refundable: false,
-                          confirmed:  confirmed)
+                                    reference:  params['ORDER_NUMBER'],
+                                    method:     'Paytrail',
+                                    refundable: false,
+                                    confirmed:  confirmed)
+        else
+          payment.update_attribute(confirmed: confirmed)
         end
-
-        payment.update_attribute(confirmed: confirmed)
 
         save!
       rescue
