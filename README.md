@@ -1,8 +1,6 @@
-# Shoppe::Paytrail
+# Paytrail module for Shoppe
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/shoppe/paytrail`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Integrate Paytrail to your Shoppe application, with ease.
 
 ## Installation
 
@@ -14,25 +12,49 @@ gem 'shoppe-paytrail'
 
 And then execute:
 
-    $ bundle
+    $ bundle install
 
-Or install it yourself as:
+## Example Payment handling
 
-    $ gem install shoppe-paytrail
+````ruby
+class PaymentsController < ApplicationController
+  before_action(only: [:paytrail, :paytrail_ok, :paytrail_error, :paytrail_notification]) { Shoppe::Paytrail.configure }
 
-## Usage
+  def paytrail
+    redirect_to current_order.redirect_to_paytrail(payments_paytrail_ok_url, payments_paytrail_error_url, payments_paytrail_notification_url)
+  end
 
-TODO: Write usage instructions here
+  def paytrail_ok
+    redirect_to root_path if current_order.confirming?
 
-## Development
+    paytrail_order = Shoppe::Order.find(params['ORDER_NUMBER'])
+    paytrail_order.handle_paytrail_payment(params, false)
+    paytrail_order.confirm!
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+    clear_current_order
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+    respond_to do |wants|
+      wants.html { redirect_to root_path, notice: 'Your order has now been completed!' }
+    end
+  rescue => e
+    redirect_to root_path, alert: 'There was an error while completing the payment'
+  end
+
+  def paytrail_error
+    redirect_to root_path, alert: 'The payment process was aborted'
+  end
+
+  def paytrail_notification
+    paytrail_order = Shoppe::Order.find(params['ORDER_NUMBER'])
+    paytrail_order.handle_paytrail_payment(params, true)
+    render :text => ""
+  end
+end
+````
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/shoppe-paytrail.
+Bug reports and pull requests are welcome on GitHub at https://github.com/anakinj/shoppe-paytrail.
 
 
 ## License

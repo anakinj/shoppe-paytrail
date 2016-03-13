@@ -4,7 +4,7 @@ module Shoppe
       def redirect_to_paytrail(success_url, failure_url, notification_url)
         response = PaytrailClient::Payment.create(order_number: number,
                                                   currency: 'EUR',
-                                                  locale: 'en_US',
+                                                  locale: resolve_locale,
                                                   url_set: {
                                                     success: success_url,
                                                     failure: failure_url,
@@ -27,11 +27,11 @@ module Shoppe
         payment = payments.find_by(reference: params['ORDER_NUMBER'])
 
         if payment.nil?
-          payment = payments.create(amount:     total,
-                                    reference:  params['ORDER_NUMBER'],
-                                    method:     'Paytrail',
-                                    refundable: false,
-                                    confirmed:  confirmed)
+          payments.create(amount:     total,
+                          reference:  params['ORDER_NUMBER'],
+                          method:     'Paytrail',
+                          refundable: false,
+                          confirmed:  confirmed)
         else
           payment.update_attribute(:confirmed, confirmed)
         end
@@ -39,6 +39,17 @@ module Shoppe
         save!
       rescue
         raise Shoppe::Errors::PaymentDeclined, 'Could not verify Paytrail payment'
+      end
+
+      def resolve_locale
+        case I18n.locale
+        when :fi
+          'fi_FI'
+        when :sv
+          'sv_SE'
+        else
+          'en_US'
+        end
       end
     end
   end
