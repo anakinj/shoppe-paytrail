@@ -1,5 +1,7 @@
 # Paytrail module for Shoppe
 
+[![Code Climate](https://codeclimate.com/github/anakinj/shoppe-paytrail/badges/gpa.svg)](https://codeclimate.com/github/anakinj/shoppe-paytrail)
+
 Integrate Paytrail to your Shoppe application, with ease.
 
 ## Installation
