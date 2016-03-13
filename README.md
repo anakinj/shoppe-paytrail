@@ -1,6 +1,6 @@
 # Paytrail module for Shoppe
 
-[![Code Climate](https://codeclimate.com/github/anakinj/shoppe-paytrail/badges/gpa.svg)](https://codeclimate.com/github/anakinj/shoppe-paytrail)
+[![Build Status](https://travis-ci.org/anakinj/shoppe-paytrail.svg?branch=master)](https://travis-ci.org/anakinj/shoppe-paytrail) [![Code Climate](https://codeclimate.com/github/anakinj/shoppe-paytrail/badges/gpa.svg)](https://codeclimate.com/github/anakinj/shoppe-paytrail) [![Code Climate](https://codeclimate.com/github/anakinj/shoppe-paytrail/badges/gpa.svg)](https://codeclimate.com/github/anakinj/shoppe-paytrail) [![Gem Version](https://badge.fury.io/rb/shoppe-paytrail.svg)](https://badge.fury.io/rb/shoppe-paytrail)
 
 Integrate Paytrail to your Shoppe application, with ease.
 
