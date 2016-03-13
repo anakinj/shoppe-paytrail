@@ -25,7 +25,7 @@ class PaymentsController < ApplicationController
   end
 
   def paytrail_ok
-    redirect_to root_path if current_order.confirming?
+    redirect_to root_path and return unless current_order.confirming?
 
     paytrail_order = Shoppe::Order.find(params['ORDER_NUMBER'])
     paytrail_order.handle_paytrail_payment(params, false)
@@ -60,4 +60,3 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/anakin
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
